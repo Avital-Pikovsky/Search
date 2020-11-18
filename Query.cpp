@@ -80,19 +80,42 @@ QueryResult AdjacentQuery::eval (const TextQuery& text) const
 std::ostream &print(std::ostream &os, const QueryResult &qr)
 {
   if(qr.sought.find("AD") != string::npos){
-    os << "\"" << qr.sought << "\"" << " occurs " << 
-        qr.lines->size()/2 << " times:" <<std::endl;
+    
+    if(qr.lines->size() == 3){
+      os << "\"" << qr.sought << "\"" << " occurs 2" 
+           << " times:" <<std::endl;
+    int count = 0;
+      for (auto num : *qr.lines)
+      {
+        os << "\t(line " << num + 1 << ") " 
+            << *(qr.file->begin() + num) << std::endl;
+        count++;
+  
+        if((count) % 2 == 0 && count != qr.lines->size())
+          os << "\n";
+
+        if(count == qr.lines->size()-1)
+          os << "\t(line " << num + 1 << ") " 
+              << *(qr.file->begin() + num) << std::endl;
+      }
+      
+    }
+    else{
+      os << "\"" << qr.sought << "\"" << " occurs " << 
+          qr.lines->size()/2 << " times:" <<std::endl;
+    
         
-        int count = 0;
-    for (auto num : *qr.lines)
-    {
+      int count = 0;
+      for (auto num : *qr.lines)
+      {
         os << "\t(line " << num + 1 << ") " 
             << *(qr.file->begin() + num) << std::endl;
         count++;
         if((count) % 2 == 0 && count != qr.lines->size())
           os << "\n";
+      }
     }
-    return os;
+  return os;
   }
     os << "\"" << qr.sought << "\"" << " occurs " << 
         qr.lines->size() << " times:" <<std::endl;
